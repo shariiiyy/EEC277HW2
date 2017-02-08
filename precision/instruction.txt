@@ -1,0 +1,13 @@
+#testPrecision only runs precision test
+#on one operator(sin/cos/log/exp) for one number
+To compile and run testPrecision.c:
+cmake .
+make
+./testPrecision
+
+
+#arithmeticPrecision run tests on four operator
+#and each operator get test with 200 numbers
+To compile and run arithmeticPrecision.cpp:
+g++ -I/opt/local/include -L/opt/local/lib -framework OpenGL -lglew -lglfw arithmeticPrecision.cpp -o test
+./test
