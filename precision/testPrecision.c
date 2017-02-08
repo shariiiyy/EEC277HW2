@@ -96,7 +96,7 @@ main(int argc, char **argv)
 	    "                                                                  \n"
 	    "void main(void)                                                   \n"
 	    "{                                                                 \n"
-	    "    color = vec4(0.0, cos(0.8), 1.0, 1.0);                        \n"
+	    "    color = vec4(0.0, exp(-0.1), 1.0, 1.0);                        \n"
 	    "}                                                                 \n"
 	};
 
@@ -147,8 +147,8 @@ main(int argc, char **argv)
 	GLfloat* out = malloc(sizeof(GLfloat*) * 4);
 
 	// As long as our window remains open (ESC is not pressed), we'll continue to render things.
-	while(!glfwWindowShouldClose(window))
-	{
+	//while(!glfwWindowShouldClose(window))
+	//{
 	  // Set up our green background color
 	  static const GLfloat green[] = { 0.0f, 0.25f, 0.0f, 1.0f};
 	  // Clear the entire buffer with our green color (sets the background to be green).
@@ -163,13 +163,13 @@ main(int argc, char **argv)
 	  glfwSwapBuffers(window);
 	  glfwPollEvents();
 
-	}
+	//}
 
-	glReadPixels(80, 80, 1, 1, GL_RGB, GL_FLOAT, out);
+	glReadPixels(75, 75, 1, 1, GL_RGB, GL_FLOAT, out);
 
 
 
-	printf("out(gpu): %f \t out(cpu): %f\n", out[1], cos(0.8));
+	printf("out(gpu): %f \t out(cpu): %f\n", out[1], exp(-0.1));
 
 
 }
