@@ -1,5 +1,5 @@
-/*
- * WESBENCH Copyright (c) 2009, The Regents of the University of
+
+/* WESBENCH Copyright (c) 2009, The Regents of the University of
  * California, through  Lawrence Berkeley National Laboratory (subject to
  * receipt of any required approvals from the U.S. Dept. of Energy).  All
  * rights reserved.
@@ -1190,11 +1190,21 @@ wesTriangleRateBenchmark(AppState *as)
 #else
   usleep(250000);
 #endif
-
   /* TODO: compute/return the Mtri/seconds */
+    elapsedTimeSeconds = endTime-startTime;
+    trisPerSecond = totalTris/elapsedTimeSeconds;
+    as->computedMTrisPerSecond= trisPerSecond / (1000000.0f);
+    
   /* TODO: compute/return the MVertexOps/sec */
+    vertsPerSecond = totalVerts/elapsedTimeSeconds;
+    as->computedMVertexOpsPerSecond= vertsPerSecond/(1000000.0f);
+    
   /* TODO: compute/return the FPS */
+    as->computedFPS= nFrames/elapsedTimeSeconds;
+    
   /* TODO: compute/return the mFrags/sec */
+    as->computedMFragsPerSecond= as->computedMTrisPerSecond * triangleAreaPixels;
+
 
   printf("verts/frame = %d \n", dispatchVertexCount);
   printf("nframes = %d \n", nFrames);
@@ -1425,45 +1435,55 @@ void runBenchmark(void) {
 
 
       if (myAppState.doAreaTest != 0)  /* iterate over triangle area */
-        {
-          fprintf(df,"Area\tMv/sec\tMF/sec\tMT/sec\tVs/buckt\tIs/buckt\n");
-          /* TODO: Currently we're testing only triangles with area of
-             1.0 pixels. */
-          myAppState.triangleAreaInPixels = 1.0f;
+      {
+        fprintf(df,"Area\tMv/sec\tMF/sec\tMT/sec\tVs/buckt\tIs/buckt\n");
+
+
+        for (int i = 0; i <= 17; i++){ //from 1.... 128K
+          myAppState.triangleAreaInPixels = 1.0f* pow(2.0, i); //compute different area each time 
           wesTriangleRateBenchmark(&myAppState);
 
           fprintf(stderr," %s: area=%2.1f px, tri rate = %3.2f Mtri/sec, vertex rate=%3.2f Mverts/sec, fill rate = %4.2f Mpix/sec, verts/bucket=%ld, indices/bucket=%ld\n", myAppState.appName, myAppState.triangleAreaInPixels, myAppState.computedMTrisPerSecond, myAppState.computedMVertexOpsPerSecond, myAppState.computedMFragsPerSecond, myAppState.computedVertsPerArrayCall, myAppState.computedIndicesPerArrayCall);
           fprintf(df,"%2.1f\t%3.2f\t%4.2f\t%4.2f\t%ld\t%ld\n", myAppState.triangleAreaInPixels, myAppState.computedMVertexOpsPerSecond, myAppState.computedMFragsPerSecond, myAppState.computedMTrisPerSecond, myAppState.computedVertsPerArrayCall, myAppState.computedIndicesPerArrayCall);
 
         }
+      }
       else if (myAppState.doVBufSizeTest != 0) /* iterate over vbuf size */
         {
           fprintf(df,"Area\tMv/sec\tMF/sec\tMT/sec\tVs/buckt\tIs/buckt\n");
-          /* TODO: Currently we're only testing a buffer size of 64 elements. */
-          /* note: If we have large buffers (say, in the millions of
+
+           /* note: If we have large buffers (say, in the millions of
            * elements) with this program, you need to specify a really
            * small triangle area size, like -a 0.125 (area of each
            * triangle is 0.125 px^2)
            */
+          for (int i = 1; i <= 23; i++){ 
+            if (i >= 10){
+              myAppState.triangleAreaInPixels = 0.125f;
+            }
 
-          myAppState.vertexBufLimit = 64;
-          wesTriangleRateBenchmark(&myAppState);
+            myAppState.vertexBufLimit = 1.0f * pow(2.0, i);
+            wesTriangleRateBenchmark(&myAppState);
 
-          fprintf(stderr," %s: area=%2.1f px, tri rate = %3.2f Mtri/sec, vertex rate=%3.2f Mverts/sec, fill rate = %4.2f Mpix/sec, verts/bucket=%ld, indices/bucket=%ld\n", myAppState.appName, myAppState.triangleAreaInPixels, myAppState.computedMTrisPerSecond, myAppState.computedMVertexOpsPerSecond, myAppState.computedMFragsPerSecond, myAppState.computedVertsPerArrayCall, myAppState.computedIndicesPerArrayCall);
-          fprintf(df,"%2.1f\t%3.2f\t%4.2f\t%4.2f\t%ld\t%ld\n", myAppState.triangleAreaInPixels, myAppState.computedMVertexOpsPerSecond, myAppState.computedMFragsPerSecond, myAppState.computedMTrisPerSecond, myAppState.computedVertsPerArrayCall, myAppState.computedIndicesPerArrayCall);
+            fprintf(stderr," %s: area=%2.1f px, tri rate = %3.2f Mtri/sec, vertex rate=%3.2f Mverts/sec, fill rate = %4.2f Mpix/sec, verts/bucket=%ld, indices/bucket=%ld\n", myAppState.appName, myAppState.triangleAreaInPixels, myAppState.computedMTrisPerSecond, myAppState.computedMVertexOpsPerSecond, myAppState.computedMFragsPerSecond, myAppState.computedVertsPerArrayCall, myAppState.computedIndicesPerArrayCall);
+            fprintf(df,"%2.1f\t%3.2f\t%4.2f\t%4.2f\t%ld\t%ld\n", myAppState.triangleAreaInPixels, myAppState.computedMVertexOpsPerSecond, myAppState.computedMFragsPerSecond, myAppState.computedMTrisPerSecond, myAppState.computedVertsPerArrayCall, myAppState.computedIndicesPerArrayCall);
+            }
         }
       else if (myAppState.doTextureTest != 0) /* iterate over texture sizes */
         {
-          fprintf(df,"Area\tTxsize\tMv/sec\tMF/sec\tMT/sec\tVs/buckt\tIs/buckt\n");
+          fprintf(df,"Area\tTxsize\tMv/sec\tMF/sec\tMT/sec\tVs/buckt\tIs/buckt\tMB/sec\n");
 
           /* TODO: Currently we're only testing a texture size of 8
              elements on a side. */
-          myAppState.textureSize = 8;
-          wesTriangleRateBenchmark(&myAppState);
+          for (int i = 3; i <= 12; i++){//start with texture size of 8x8 up to 4Kx4K
+            myAppState.textureSize =1.0f*pow(2.0, i); //calc different texture size 
 
-          fprintf(stderr," %s: area=%2.1f px, txsize=%d, tri rate = %3.2f Mtri/sec, vertex rate=%3.2f Mverts/sec, fill rate = %4.2f Mpix/sec, verts/bucket=%ld, indices/bucket=%ld\n", myAppState.appName, myAppState.triangleAreaInPixels, myAppState.textureSize, myAppState.computedMTrisPerSecond, myAppState.computedMVertexOpsPerSecond, myAppState.computedMFragsPerSecond, myAppState.computedVertsPerArrayCall, myAppState.computedIndicesPerArrayCall);
-          fprintf(df,"%2.1f\t%d\t%3.2f\t%4.2f\t%4.2f\t%ld\t%ld\n", myAppState.triangleAreaInPixels, myAppState.textureSize, myAppState.computedMVertexOpsPerSecond, myAppState.computedMFragsPerSecond, myAppState.computedMTrisPerSecond, myAppState.computedVertsPerArrayCall, myAppState.computedIndicesPerArrayCall);
-          fflush(df);
+            wesTriangleRateBenchmark(&myAppState);
+
+            fprintf(stderr," %s: area=%2.1f px, txsize=%d, tri rate = %3.2f Mtri/sec, vertex rate=%3.2f Mverts/sec, fill rate = %4.2f Mpix/sec, verts/bucket=%ld, indices/bucket=%ld, texture bandwidth = %4.2f MB/sec\n", myAppState.appName, myAppState.triangleAreaInPixels, myAppState.textureSize, myAppState.computedMTrisPerSecond, myAppState.computedMVertexOpsPerSecond, myAppState.computedMFragsPerSecond, myAppState.computedVertsPerArrayCall, myAppState.computedIndicesPerArrayCall, sizeof(Color4DUbyte)*myAppState.computedMFragsPerSecond);
+            fprintf(df,"%2.1f\t%d\t%3.2f\t%4.2f\t%4.2f\t%ld\t%ld\t%4.2f\n", myAppState.triangleAreaInPixels, myAppState.textureSize, myAppState.computedMVertexOpsPerSecond, myAppState.computedMFragsPerSecond, myAppState.computedMTrisPerSecond, myAppState.computedVertsPerArrayCall, myAppState.computedIndicesPerArrayCall, sizeof(Color4DUbyte)*myAppState.computedMFragsPerSecond);
+            fflush(df);
+          }
         }
       fclose(df);
     }

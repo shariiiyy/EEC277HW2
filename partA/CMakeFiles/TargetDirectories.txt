@@ -1,0 +1,3 @@
+/Users/Shari/Desktop/davis/EEC277Hw2/partA/CMakeFiles/rebuild_cache.dir
+/Users/Shari/Desktop/davis/EEC277Hw2/partA/CMakeFiles/edit_cache.dir
+/Users/Shari/Desktop/davis/EEC277Hw2/partA/CMakeFiles/wesbench-instructional.dir

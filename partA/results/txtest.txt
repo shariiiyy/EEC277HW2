@@ -1,0 +1,23 @@
+
+./wesbench-instructional Setup parameters
+Triangle area	128.000 (pixels^2)
+Test duration	5.000000(s)
+Screen W/H	(1024,1024)
+Triangle limit	1073741824
+VertexBuf limit	1073741824
+Texture size	(0 x 0)
+Lighting is 	disabled
+ColorMaterial 	disabled
+Triangle type	0 
+Retained mode	disabled
+Area	Txsize	Mv/sec	MF/sec	MT/sec	Vs/buckt	Is/buckt	MB/sec
+128.0	8	36.61	1562.12	12.20	6144	0	6248.46
+128.0	16	36.70	1566.05	12.23	6144	0	6264.19
+128.0	32	36.75	1567.83	12.25	6144	0	6271.32
+128.0	64	36.85	1572.13	12.28	6144	0	6288.52
+128.0	128	36.16	1542.66	12.05	6144	0	6170.66
+128.0	256	35.80	1527.62	11.93	6144	0	6110.47
+128.0	512	31.79	1356.18	10.60	6144	0	5424.70
+128.0	1024	15.69	669.41	5.23	6144	0	2677.64
+128.0	2048	8.22	350.75	2.74	6144	0	1402.99
+128.0	4096	6.50	277.30	2.17	6144	0	1109.18
