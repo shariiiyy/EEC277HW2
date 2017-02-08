@@ -96,7 +96,7 @@ main(int argc, char **argv)
 	    "                                                                  \n"
 	    "void main(void)                                                   \n"
 	    "{                                                                 \n"
-	    "    color = vec4(0.0, exp(-0.1), 1.0, 1.0);                        \n"
+	    "    color = vec4(0.0, sin(7.0), 1.0, 1.0);                        \n"
 	    "}                                                                 \n"
 	};
 
@@ -169,7 +169,7 @@ main(int argc, char **argv)
 
 
 
-	printf("out(gpu): %f \t out(cpu): %f\n", out[1], exp(-0.1));
+	printf("out(gpu): %f \t out(cpu): %f\n", out[1], sin(7));
 
 
 }

@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <sstream>
+#include <iomanip>
 
 
 const static std::string FRAGMENT_SHADER =

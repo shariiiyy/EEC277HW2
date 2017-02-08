@@ -11,17 +11,18 @@ int main()
 
 	//200 number for each test
 	//rgb value has to be between 0 and 1
-	result = run_test(window, ops[0], 7, 15.5, 0.0425);
+	result = run_test(window, ops[0], 7.0f, 15.5f, 0.0425f);
 	file_t << "sin, " << result<<std::endl;
-
-	result=run_test(window, ops[1], 1, 10, 0.045);
+	
+	result=run_test(window, ops[1], 1.0f, 10.0f, 0.045f);
 	file_t << "cos, " << result << std::endl;
 	
-	result = run_test(window, ops[2], 1.01, 2.7, 0.00845);
+	result = run_test(window, ops[2], 1.01f, 2.7f, 0.00845f);
 	file_t << "log, " << result << std::endl;
 
-	result = run_test(window, ops[3], -7, -1, 0.03);
+	result = run_test(window, ops[3], -7.0f, -1.0f, 0.03f);
 	file_t << "exp, " << result << std::endl;
+	
 	
 	file_t.close();
 	return 0;
@@ -30,36 +31,40 @@ int main()
 double run_test(GLFWwindow* window, std::string op, float start, float end, float step) {
 
 	std::ofstream file_t(op, std::ios::out);
+
 	file_t.precision(30);
-	file_t << "Relative error for "<<op << ", test started with input "<< start<<" ended at "<< end <<" with a step of "<<step <<std::endl;
-	double sum_gpu = 0;
-	double sum_cpu = 0;
-	double max_error = 0;
+	file_t << "Relative error for "<< op << ", test started with input "<< start<<" ended at "<< end <<" with a step of "<<step <<std::endl;
+	file_t << "input(i)\tGPU\t\tCPU\t\trelativeErr"<<std::endl;
+	double sumGPU = 0;
+	double sumCPU = 0;
+	double maxError = 0;
 	for (float i = start; i < end; i += step)
 	{
-		float gpu_result = getGPUResult(window, op, i);
-		double cpu_result = getCPUValue(op, i);
-		sum_gpu +=  fabs(gpu_result);
-		sum_cpu +=  fabs(cpu_result);
+		float gpu = getGPUResult(window, op, i);
+		double cpu = getCPUValue(op, i);
+		sumGPU +=  fabs(gpu);
+		sumCPU +=  fabs(cpu);
 		//calulating the relative error 
-		double absolute_error = fabs( fabs(cpu_result) - fabs(gpu_result));
-		double relative_error = (absolute_error == 0.0) ? 0.0 : fabs(absolute_error / cpu_result);
-		relative_error = (relative_error > 1.0) ? 1.0 : relative_error;
-		file_t << relative_error << "	" << i << std::endl;
-		if (relative_error > max_error)
-			max_error = relative_error;		
+		double absError = fabs( fabs(cpu) - fabs(gpu));
+		double relError = (absError == 0.0) ? 0.0 : fabs(absError / cpu);
+		relError = (relError > 1.0) ? 1.0 : relError;
+		file_t << std::fixed << std::setprecision(10) << i << "\t" << std::fixed << std::setprecision(10) << gpu << "\t" << std::fixed << std::setprecision(10) << cpu <<"\t" << std::fixed << std::setprecision(10) << relError << std::endl;
+		if (relError > maxError)
+			maxError = relError;
+
+		//std::cout << "CPU: " << cpu << " GPU: " << gpu << " relative errror: "<< relError << std::endl;	
 
 	}
 		
-	double temp = fabs(sum_cpu - sum_gpu);
-	double average_error = temp / sum_cpu;
-	std::cout << "The average relative error for " << op << " is " << average_error << std::endl;
-	file_t << "The average relative error for " << op << " is " << average_error << std::endl;
-	file_t << "The max realtive error for " << op << " is " << max_error << std::endl ;
+	double temp = fabs(sumCPU - sumGPU);
+	double avgError = temp / sumCPU;
+	std::cout << "The average relative error for " << op << " is " << avgError << std::endl;
+	file_t << "The average relative error for " << op << " is " << avgError << std::endl;
+	file_t << "The max realtive error for " << op << " is " << maxError << std::endl ;
 
 	
 	file_t.close();
-	return average_error;
+	return avgError;
 
 
 }
