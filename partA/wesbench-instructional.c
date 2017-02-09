@@ -1190,21 +1190,14 @@ wesTriangleRateBenchmark(AppState *as)
 #else
   usleep(250000);
 #endif
-  /* TODO: compute/return the Mtri/seconds */
-    elapsedTimeSeconds = endTime-startTime;
-    trisPerSecond = totalTris/elapsedTimeSeconds;
-    as->computedMTrisPerSecond= trisPerSecond / (1000000.0f);
     
-  /* TODO: compute/return the MVertexOps/sec */
-    vertsPerSecond = totalVerts/elapsedTimeSeconds;
-    as->computedMVertexOpsPerSecond= vertsPerSecond/(1000000.0f);
-    
-  /* TODO: compute/return the FPS */
-    as->computedFPS= nFrames/elapsedTimeSeconds;
-    
-  /* TODO: compute/return the mFrags/sec */
-    as->computedMFragsPerSecond= as->computedMTrisPerSecond * triangleAreaPixels;
+    elapsedTimeSeconds =(endTime-startTime);
 
+    myAppState.computedMVertexOpsPerSecond = (totalVerts / (1000000.0f)) / elapsedTimeSeconds;
+    myAppState.computedMTrisPerSecond = (totalTris / (1000000.0f)) / elapsedTimeSeconds; 
+    myAppState.computedMFragsPerSecond = myAppState.computedMTrisPerSecond * myAppState.triangleAreaInPixels;
+    myAppState.computedMFragsPerSecond= nFrames/elapsedTimeSeconds;
+    
 
   printf("verts/frame = %d \n", dispatchVertexCount);
   printf("nframes = %d \n", nFrames);
@@ -1359,6 +1352,7 @@ main(int argc, char **argv)
 }
 
 void printInfo (GLFWwindow * window) {
+        printf("size of vertex: %lu\n", sizeof(Vertex2D));
 
   /* Display the gfx card information */
   printf( "--------------------------------------------------\n");

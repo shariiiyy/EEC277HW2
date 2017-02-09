@@ -11,16 +11,16 @@ int main()
 
 	//200 number for each test
 	//rgb value has to be between 0 and 1
-	result = run_test(window, ops[0], 7.0f, 15.5f, 0.0425f);
+	result = run_test(window, ops[0], 6.3f, 9.45f, 0.01575f);
 	file_t << "sin, " << result<<std::endl;
 	
-	result=run_test(window, ops[1], 1.0f, 10.0f, 0.045f);
+	result=run_test(window, ops[1], 4.78f, 7.78f, 0.015f);
 	file_t << "cos, " << result << std::endl;
 	
 	result = run_test(window, ops[2], 1.01f, 2.7f, 0.00845f);
 	file_t << "log, " << result << std::endl;
 
-	result = run_test(window, ops[3], -7.0f, -1.0f, 0.03f);
+	result = run_test(window, ops[3], -6.18f, -0.1f, 0.034f);
 	file_t << "exp, " << result << std::endl;
 	
 	
